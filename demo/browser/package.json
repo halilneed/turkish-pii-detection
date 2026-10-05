@@ -1,0 +1,11 @@
+{
+  "name": "turkish-pii-browser-demo",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@huggingface/transformers": "4.3.0"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.11"
+  }
+}

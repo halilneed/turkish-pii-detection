@@ -45,7 +45,7 @@ Choose **full masking**, **selected fields only**, or **everything except specif
 
 **Türkçe:** Verilen talimata göre Türkçe metindeki kişisel verileri maskeleyen 270M parametreli model. Tümünü, yalnızca seçilen alanları veya belirtilen alanlar dışındakileri maskeleyebilirsiniz. Türkçe tanıtım, sonuçlar, eğitim tarifi ve kullanım açıklamaları aşağıda korunmuştur.
 
-[Compare recorded outputs / Örnekleri karşılaştır](https://huggingface.co/spaces/halilneed/turkish-pii-detection-demo) · [Python tutorial and recorded examples](https://github.com/halilneed/turkish-pii-detection/blob/main/docs/python-turkish-pii-masking.md) · [Source code](https://github.com/halilneed/turkish-pii-detection) · [Model overview](https://halilneed.github.io/models/turkish-pii-detection/)
+[Interactive browser demo / Metninizi deneyin](https://huggingface.co/spaces/halilneed/turkish-pii-detection-demo) · [Python tutorial and recorded examples](https://github.com/halilneed/turkish-pii-detection/blob/main/docs/python-turkish-pii-masking.md) · [Source code](https://github.com/halilneed/turkish-pii-detection) · [Model overview](https://halilneed.github.io/models/turkish-pii-detection/)
 
 ## English technical guide
 
@@ -53,7 +53,7 @@ Choose **full masking**, **selected fields only**, or **everything except specif
 
 The 53-label masking schema and instruction families are inherited from v01. Names, national identifiers, phone numbers, email addresses and other personal-data expressions are transformed according to the policy. A restricted policy intentionally preserves fields that were not selected for masking.
 
-Use cases include preparing Turkish support messages, application logs or document excerpts before passing them to an LLM or another system. Validate the output on representative data. Local CPU or GPU inference is supported after downloading the model and dependencies. The online comparison page shows recorded examples; the local interactive demo processes new text on your own machine. Use fictional data while evaluating behavior.
+Use cases include preparing Turkish support messages, application logs or document excerpts before passing them to an LLM or another system. Validate the output on representative data. Local CPU or GPU inference is supported after downloading the model and dependencies. The online browser demo accepts your own text and runs a separate quantized ONNX conversion on your device. Its first run downloads approximately 472 MB of model files, plus the runtime. The application does not send inputs to a backend. Quantized outputs can differ from the original Python model; the original benchmark scores have not been revalidated for this conversion. The local Python demo uses the original weights. Use fictional data while evaluating behavior.
 
 The canonical repository serves **v02** on `main`. The old `turkish-pii-detection-v01` URL redirects here. Use `revision="v01"` for the earlier release. A commit SHA pins a specific snapshot; the examples below pin the recorded v02 weights revision.
 
@@ -110,7 +110,7 @@ Use the same fictional input with these Turkish instructions:
 | Phone only | `Metindeki yalnızca telefon numaralarını maskele; diğer tüm bilgileri olduğu gibi koru.` |
 | Keep names | `Metindeki kişi isimleri hariç tüm kişisel verileri uygun etiketlerle maskele. Kişi isimlerini olduğu gibi koru.` |
 
-The [recorded policy comparison](https://huggingface.co/spaces/halilneed/turkish-pii-detection-demo) lets you switch between three actual outputs for the same fictional input. Run the [local interactive demo](https://github.com/halilneed/turkish-pii-detection/tree/main/demo) to process your own text. The [Python tutorial](https://github.com/halilneed/turkish-pii-detection/blob/main/docs/python-turkish-pii-masking.md) records actual outputs from the pinned revision. These are functional examples, not a rerun of the 1,000-row benchmark.
+The [interactive browser demo](https://huggingface.co/spaces/halilneed/turkish-pii-detection-demo) lets you enter your own text and compare the three policies using real client-side inference. Its quantized ONNX conversion reproduced the three recorded examples and passed a different phone/email example in browser checks; these checks do not establish general accuracy. Run the [local Python demo](https://github.com/halilneed/turkish-pii-detection/tree/main/demo) to use the original weights. The [Python tutorial](https://github.com/halilneed/turkish-pii-detection/blob/main/docs/python-turkish-pii-masking.md) records actual outputs from the pinned revision. These are functional examples, not a rerun of the 1,000-row benchmark.
 
 ### Evaluation results and their scope
 

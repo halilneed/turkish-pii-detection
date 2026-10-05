@@ -21,7 +21,7 @@ tags:
 
 # Turkish PII Detection and Masking — Türkçe Kişisel Veri Maskeleme
 
-A demo for [halilneed/turkish-pii-detection](https://huggingface.co/halilneed/turkish-pii-detection), a 270M instruction-conditioned Turkish PII masking model. Compare full masking, phone-only masking, and masking that keeps names. Local execution defaults to CPU; the online Space shows recorded outputs only. The optional ZeroGPU hosting code is prepared for eligible accounts.
+A demo for [halilneed/turkish-pii-detection](https://huggingface.co/halilneed/turkish-pii-detection), a 270M instruction-conditioned Turkish PII masking model. Compare full masking, phone-only masking, and masking that keeps names. This Python application defaults to CPU. The [online Space](https://huggingface.co/spaces/halilneed/turkish-pii-detection-demo) now accepts your own input and runs a separate quantized ONNX conversion in the browser; see [browser source and build notes](browser/README.md). The optional Python ZeroGPU hosting code is prepared for eligible accounts.
 
 Türkçe: Aynı metin üzerinde tüm kişisel verileri, yalnızca telefon numaralarını veya isim dışındaki verileri maskeleyen üç politikayı deneyin. Türkçe tanıtım ve kullanım açıklamaları model kartında korunur.
 
