@@ -16,4 +16,4 @@ The evaluator reports whole-output exact match, case-sensitive literal leakage, 
 4. Freeze the final set before selecting the candidate. If benchmark weaknesses shape training examples, use a separate untouched set for the final claim.
 5. Save predictions and execution failures for every case. Report sample counts, exact match, task-specific leakage and preservation review, empty/truncated outputs, and slice results. Report entity precision/recall only with suitable span annotations and an explicit matching policy.
 
-The published 1,000-example benchmark and its raw predictions are not bundled here. No final evaluation set or v2 result is claimed. The earlier 20-example teaching exercise is not included as a 53-label benchmark.
+The published 1,000-example benchmark and its raw predictions are not bundled here. The current model card reports v02 results; see [the v02 release note](v02-release.md) for the reported metrics and selection boundary. Those results were not rerun in this companion repository. The earlier 20-example teaching exercise is not included as a 53-label benchmark.

@@ -1,5 +1,7 @@
 # Building a Small Turkish PII Masking Model: Data, Fine-Tuning, and Failure Cases
 
+> Historical v01 article, based on the model card read on 28 September 2026. Statements below about a future v2 describe the plan at that time. v02 was released on 30 September; see [the current release note](v02-release.md) and [model card](https://huggingface.co/halilneed/turkish-pii-detection). The historical comparison below has not been rewritten as a v02 result.
+
 Turkish PII masking is more than replacing an email address with a placeholder. A useful system needs to identify the relevant information, follow the requested masking scope, and preserve the rest of the message.
 
 That is the task behind [turkish-pii-detection-v01](https://huggingface.co/halilneed/turkish-pii-detection-v01), a small instruction-conditioned model for Turkish text. This article explains the recipe documented in its model card, the published comparison, and the work required to make the next version easier to evaluate and use.

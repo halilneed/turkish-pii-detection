@@ -1,8 +1,8 @@
-# Turkish PII Detection
+# Turkish PII Detection and Masking — Türkçe Kişisel Veri Maskeleme
 
-Usage examples, evaluation utilities, and development notes for [halilneed/turkish-pii-detection-v01](https://huggingface.co/halilneed/turkish-pii-detection-v01), a small model for instruction-conditioned Turkish personal-data masking.
+Usage examples, evaluation utilities, and development notes for [halilneed/turkish-pii-detection](https://huggingface.co/halilneed/turkish-pii-detection), a 270M model for instruction-conditioned Turkish PII detection and masking by [halilneed](https://halilneed.github.io/). The current release is v02; this repository also preserves historical v01 notes and its pinned inference default.
 
-**Start here:** [model and weights](https://huggingface.co/halilneed/turkish-pii-detection-v01) · [how the model was built](docs/how-it-was-built.md) · [evaluation guide](docs/evaluation.md) · [report a synthetic failure case](https://github.com/halilneed/turkish-pii-detection/issues/new?template=masking-failure.md)
+**Start here:** [model and weights](https://huggingface.co/halilneed/turkish-pii-detection) · [model overview](https://halilneed.github.io/models/turkish-pii-detection/) · [v02 results and version selection](docs/v02-release.md) · [how the model was built](docs/how-it-was-built.md) · [evaluation guide](docs/evaluation.md) · [report a synthetic failure case](https://github.com/halilneed/turkish-pii-detection/issues/new?template=masking-failure.md)
 
 Türkçe: Model, verilen talimata göre Türkçe metindeki kişisel veri ifadelerini maskeler. Bu depo kullanım örneği, değerlendirme aracı ve geliştirme notlarını bir araya getirir.
 
@@ -37,10 +37,10 @@ Use a fresh environment with a Python version supported by the installed PyTorch
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install torch transformers accelerate
-python examples/mask.py --text 'E-posta demo@example.com; durum açık.' --instruction 'Metindeki e-posta adreslerini maskele; diğer içeriği koru.'
+python examples/mask.py --revision 28644718923ae38b0105c9f3d2be57312ad0ced3 --text 'E-posta demo@example.com; durum açık.' --instruction 'Metindeki e-posta adreslerini maskele; diğer içeriği koru.'
 ```
 
-The first run downloads model files. The script defaults to a recorded model revision and deterministic decoding. The example was syntax-checked, but model inference has not been executed as part of this repository preparation. No runtime, memory, output, or package-version compatibility result is claimed. The model card's usage example is the source for its prompt format. Record your installed versions and hardware when reporting a run.
+The first run downloads model files. The command above selects a recorded v02 revision. Without `--revision`, the script retains its historical pinned v01 default (`37f0c06270486017b8498cacbb09658f3eacf150`). Decoding is deterministic. The example was syntax-checked, but model inference has not been executed as part of this repository preparation. No runtime, memory, output, or package-version compatibility result is claimed. The model card's usage example is the source for its prompt format. Record your installed versions and hardware when reporting a run.
 
 ## Run the evaluator without downloading a model
 
@@ -56,14 +56,15 @@ These fixtures are deliberately written to demonstrate leakage and unnecessary m
 
 ## Reported release results
 
-The model card, read on 28 September 2026, reports whole-line exact match on 1,000 synthetic Turkish examples:
+The current model card, read on 5 October 2026, reports the following synthetic-data results. They have **not been rerun in this repository**.
 
-| Comparison described in the card | Exact match | Schema-neutral subset (903 examples) |
+| Metric | v01 rerun reported in current card | v02 |
 | --- | ---: | ---: |
-| 270M baseline | 0.743 | 0.773 |
-| Released model | 0.882 | 0.902 |
+| Whole-row exact match, 1,000 examples | 0.880 | 0.944 |
+| Schema-neutral exact match, 903 examples | 0.900 | 0.951 |
+| B partition, 531 examples not used for model selection | 0.885 | 0.945 |
 
-These historical results have not been rerun here. The precise baseline revision, raw predictions, benchmark distribution and training artifacts are still needed for independent reproduction. Exact match is not entity recall or a privacy guarantee.
+The historical v01 card reported 0.882 / 0.902. The current card attributes the rerun difference to bf16 batched inference. Benchmark aggregate feedback influenced development; read [the v02 release note](docs/v02-release.md) for the training and selection boundary. Exact match is not entity recall or a privacy guarantee.
 
 ## Limitations and feedback
 
@@ -73,7 +74,7 @@ Use fictional examples in public issues. Include the instruction, expected and a
 
 ## Development notes
 
-Read [Building a Small Turkish PII Masking Model](docs/how-it-was-built.md) for the documented recipe and next evaluation priorities. The article is included here; a direct Medium article link will be added after publication. Author: [Halil on GitHub](https://github.com/halilneed) · [Medium](https://hailneed.medium.com/).
+Read [Building a Small Turkish PII Masking Model](docs/how-it-was-built.md) for the documented recipe and next evaluation priorities. The historical v01 article is included here. A [published Medium article](https://halilneed.medium.com/daha-b%C3%BCy%C3%BCk-model-e%C4%9Fitmedim-zay%C4%B1f-dilimleri-e%C4%9Fittim-f4dcc4afaf5d) is also linked from the model card. Author: [halilneed portfolio](https://halilneed.github.io/) · [GitHub](https://github.com/halilneed) · [Medium](https://halilneed.medium.com/).
 
 See the [roadmap](docs/roadmap.md). Documentation improvements do not constitute a new model version.
 

@@ -5,7 +5,7 @@ Prompt format follows the published model card. Use fictional input.
 import argparse
 import json
 
-MODEL_ID = "halilneed/turkish-pii-detection-v01"
+MODEL_ID = "halilneed/turkish-pii-detection"
 DEFAULT_REVISION = "37f0c06270486017b8498cacbb09658f3eacf150"
 
 
