@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Turkish PII Detection: Compare Masking Policies — halilneed</title>
+<meta name="description" content="Compare three real outputs from halilneed's 270M Turkish PII detection and masking model. Full masking, phone only, or preserve names. Download the model and run the Python demo.">
+<style>
+:root{color-scheme:light;--ink:#172126;--muted:#576569;--line:#dbe3e3;--accent:#126451;--wash:#f2f6f5}*{box-sizing:border-box}body{margin:0;background:#fafcfb;color:var(--ink);font:16px/1.6 system-ui,sans-serif}main{max-width:1040px;margin:auto;padding:40px 24px 64px}.eyebrow{color:var(--accent);font-size:13px;font-weight:700;letter-spacing:.08em}h1{font-size:clamp(32px,5vw,52px);line-height:1.1;letter-spacing:-.045em;margin:18px 0}p{max-width:80ch}.intro{color:var(--muted)}.links{display:flex;gap:12px;flex-wrap:wrap;margin:24px 0 32px}a{color:var(--accent);text-underline-offset:3px}.button{display:inline-block;padding:10px 16px;border:1px solid var(--line);border-radius:8px;text-decoration:none;font-weight:600}.primary{background:var(--accent);color:white;border-color:var(--accent)}.panel{background:white;border:1px solid var(--line);border-radius:12px;padding:22px;margin:16px 0}h2{font-size:17px;margin:0 0 12px}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:15px/1.7 ui-monospace,monospace;margin:0;padding:18px;border-radius:8px;background:var(--wash)}fieldset{border:0;padding:0;margin:26px 0}legend{font-weight:650;margin-bottom:12px}.choices{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.choice{display:flex;align-items:flex-start;gap:9px;padding:16px;border:1px solid var(--line);border-radius:10px;cursor:pointer;background:white}.choice:has(input:checked){border-color:var(--accent);background:#edf6f1}.choice:focus-within{outline:2px solid var(--accent);outline-offset:3px}input{accent-color:var(--accent);margin-top:6px}small{display:block;color:var(--muted);font-size:13px}.output{border-left:4px solid var(--accent)}.note{font-size:14px;color:var(--muted)}details{font-size:13px;color:var(--muted);overflow-wrap:anywhere}summary{cursor:pointer;margin:12px 0}footer{margin-top:32px;border-top:1px solid var(--line);padding-top:20px;color:var(--muted);font-size:13px}@media(max-width:640px){main{padding:26px 16px}.choices{grid-template-columns:1fr}.panel{padding:16px}.button{font-size:14px}}
+</style>
+</head>
+<body><main>
+<div class="eyebrow">HALILNEED · 270M · TURKISH NLP</div>
+<h1>Turkish PII detection<br>with a masking policy.</h1>
+<p class="intro">Compare three <strong>recorded model outputs</strong> for the same fictional text. This page shows what the pinned v02 model generated; run the local demo to process your own text.</p>
+<p class="intro" lang="tr">Aynı kurgusal metinde üç politikanın kaydedilmiş gerçek çıktılarını karşılaştırın. Kendi metninizi işlemek için yerel demoyu çalıştırın.</p>
+<div class="links"><a class="button primary" href="https://huggingface.co/halilneed/turkish-pii-detection" target="_blank" rel="noopener">Download the model / Modeli indir ↗</a><a class="button" href="https://github.com/halilneed/turkish-pii-detection/tree/main/demo" target="_blank" rel="noopener">Run the local demo ↗</a><a class="button" href="https://github.com/halilneed/turkish-pii-detection/blob/main/docs/python-turkish-pii-masking.md" target="_blank" rel="noopener">Python guide ↗</a></div>
+<section class="panel"><h2>Fictional input / Kurgusal girdi</h2><pre id="input-text"></pre></section>
+<fieldset><legend>Choose a recorded policy / Kaydedilmiş bir politika seçin</legend><div class="choices">
+<label class="choice"><input type="radio" name="policy" value="0" checked><span>Mask all<small>Tümünü maskele</small></span></label>
+<label class="choice"><input type="radio" name="policy" value="1"><span>Phone only<small>Yalnızca telefonu maskele</small></span></label>
+<label class="choice"><input type="radio" name="policy" value="2"><span>Keep names<small>İsim hariç tümünü maskele</small></span></label>
+</div></fieldset>
+<section class="panel"><h2>Turkish instruction / Türkçe talimat</h2><pre id="instruction"></pre></section>
+<section class="panel output" aria-live="polite" aria-atomic="true"><h2>Recorded model output / Kaydedilmiş model çıktısı</h2><pre id="output"></pre></section>
+<p class="note">The model generates transformed text, rather than NER spans or offsets. Restricted policies deliberately preserve some personal data. Review every output; these three examples do not establish real-document reliability.</p>
+<p class="note" lang="tr">Model maskelenmiş metin üretir. Sınırlı politikalar bazı kişisel verileri bilerek korur. Her çıktıyı kontrol edin.</p>
+<details><summary>Recorded revision and test conditions</summary><p>v02 · <code>28644718923ae38b0105c9f3d2be57312ad0ced3</code><br>5 October 2026 · CPU · PyTorch 2.8.0+cpu · Transformers 4.56.1 · deterministic decoding. Functional examples; no benchmark rerun.</p></details>
+<noscript>JavaScript is required to switch policies. <a href="https://github.com/halilneed/turkish-pii-detection/blob/main/docs/python-turkish-pii-masking.md">Read all recorded outputs in the Python guide.</a></noscript>
+<footer><a href="https://huggingface.co/halilneed/turkish-pii-detection" target="_blank" rel="noopener">Model card, weights and limitations</a> · <a href="https://halilneed.github.io/models/turkish-pii-detection/" target="_blank" rel="noopener">Model overview</a></footer>
+</main>
+<script type="application/json" id="recorded-runs">[{"input": "müşteri Ayşe Yılmaz tc 12345678901 tel 0532 111 22 33 e-posta demo@example.com.", "policy": "Mask all / Tümünü maskele", "output": "müşteri [AD] tc [TCKN] tel [TEL] e-posta [EMAIL].", "details": {"policy_instruction": "Metindeki tüm kişisel verileri uygun etiketlerle maskele.", "model": "halilneed/turkish-pii-detection", "revision": "28644718923ae38b0105c9f3d2be57312ad0ced3", "input_tokens": 70, "generated_tokens": 21, "generation_seconds": 0.879, "possibly_truncated": false}}, {"input": "müşteri Ayşe Yılmaz tc 12345678901 tel 0532 111 22 33 e-posta demo@example.com.", "policy": "Phone only / Yalnızca telefonu maskele", "output": "müşteri Ayşe Yılmaz tc 12345678901 tel [TEL] e-posta demo@example.com.", "details": {"policy_instruction": "Metindeki yalnızca telefon numaralarını maskele; diğer tüm bilgileri olduğu gibi koru.", "model": "halilneed/turkish-pii-detection", "revision": "28644718923ae38b0105c9f3d2be57312ad0ced3", "input_tokens": 74, "generated_tokens": 33, "generation_seconds": 1.305, "possibly_truncated": false}}, {"input": "müşteri Ayşe Yılmaz tc 12345678901 tel 0532 111 22 33 e-posta demo@example.com.", "policy": "Keep names / İsim hariç tümünü maskele", "output": "müşteri Ayşe Yılmaz tc [TCKN] tel [TEL] e-posta [EMAIL].", "details": {"policy_instruction": "Metindeki kişi isimleri hariç tüm kişisel verileri uygun etiketlerle maskele. Kişi isimlerini olduğu gibi koru.", "model": "halilneed/turkish-pii-detection", "revision": "28644718923ae38b0105c9f3d2be57312ad0ced3", "input_tokens": 84, "generated_tokens": 22, "generation_seconds": 0.9, "possibly_truncated": false}}]</script>
+<script>
+const runs=JSON.parse(document.getElementById('recorded-runs').textContent);
+document.getElementById('input-text').textContent=runs[0].input;
+function show(index){const run=runs[index];document.getElementById('instruction').textContent=run.details.policy_instruction;document.getElementById('output').textContent=run.output;}
+document.querySelectorAll('input[name="policy"]').forEach(input=>input.addEventListener('change',()=>show(Number(input.value))));
+show(0);
+</script>
+</body></html>

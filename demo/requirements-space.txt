@@ -1,0 +1,7 @@
+gradio==5.49.1
+transformers==4.56.1
+torch==2.8.0
+huggingface-hub==0.34.4
+fastapi==0.115.14
+starlette==0.46.2
+spaces==0.51.3

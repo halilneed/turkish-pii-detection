@@ -2,13 +2,14 @@
 
 Usage examples, evaluation utilities, and development notes for [halilneed/turkish-pii-detection](https://huggingface.co/halilneed/turkish-pii-detection), a 270M model for instruction-conditioned Turkish PII detection and masking by [halilneed](https://halilneed.github.io/). The current release is v02; this repository also preserves historical v01 notes and its pinned inference default.
 
-**Start here:** [model and weights](https://huggingface.co/halilneed/turkish-pii-detection) · [model overview](https://halilneed.github.io/models/turkish-pii-detection/) · [v02 results and version selection](docs/v02-release.md) · [how the model was built](docs/how-it-was-built.md) · [evaluation guide](docs/evaluation.md) · [report a synthetic failure case](https://github.com/halilneed/turkish-pii-detection/issues/new?template=masking-failure.md)
+**Start here:** [Turkish PII detection model and weights](https://huggingface.co/halilneed/turkish-pii-detection) · [recorded masking examples](https://huggingface.co/spaces/halilneed/turkish-pii-detection-demo) · [Python tutorial with recorded examples](docs/python-turkish-pii-masking.md) · [model overview](https://halilneed.github.io/models/turkish-pii-detection/) · [v02 results and version selection](docs/v02-release.md) · [how the model was built](docs/how-it-was-built.md) · [evaluation guide](docs/evaluation.md) · [report a synthetic failure case](https://github.com/halilneed/turkish-pii-detection/issues/new?template=masking-failure.md)
 
 Türkçe: Model, verilen talimata göre Türkçe metindeki kişisel veri ifadelerini maskeler. Bu depo kullanım örneği, değerlendirme aracı ve geliştirme notlarını bir araya getirir.
 
 ## What is included
 
 - A local inference example adapted to the prompt format in the published model card.
+- A bilingual CPU [Gradio demo](demo/README.md) and a [Python masking tutorial](docs/python-turkish-pii-masking.md) that compare three policies using actual model outputs.
 - A dependency-free evaluator for supplied outputs, with deliberately handwritten fixtures.
 - An article explaining the documented training recipe and its evaluation limitations.
 - A scoped roadmap for the next masking release.

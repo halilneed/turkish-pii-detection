@@ -39,10 +39,132 @@ model-index:
 
 # Turkish PII Detection and Masking — Türkçe Kişisel Veri Maskeleme (v02)
 
-**By [halilneed](https://halilneed.github.io/).** A 270M instruction-conditioned model for Turkish PII detection and masking. It generates transformed text according to a masking policy: full masking, selected fields, or everything except specified fields. It does not return NER spans or entity offsets. Local inference is supported; validate outputs on representative data before use.
+**[halilneed/turkish-pii-detection](https://huggingface.co/halilneed/turkish-pii-detection)** is a **270M-parameter model for Turkish PII detection and instruction-conditioned masking**, by [halilneed](https://halilneed.github.io/). PII means personally identifiable information. Give it Turkish text and a Turkish masking instruction: it generates text with the requested personal-data fields replaced by labels.
 
-[Model overview / Türkçe özet](https://halilneed.github.io/models/turkish-pii-detection/) · [Python examples and evaluation guide](https://github.com/halilneed/turkish-pii-detection) · [v02 release notes](https://github.com/halilneed/turkish-pii-detection/blob/main/docs/v02-release.md)
+Choose **full masking**, **selected fields only**, or **everything except specified fields**. The model produces transformed text; it does not return named-entity recognition (NER) spans, token labels or character offsets. For a structured NER pipeline, choose a span-based detector.
 
+**Türkçe:** Verilen talimata göre Türkçe metindeki kişisel verileri maskeleyen 270M parametreli model. Tümünü, yalnızca seçilen alanları veya belirtilen alanlar dışındakileri maskeleyebilirsiniz. Türkçe tanıtım, sonuçlar, eğitim tarifi ve kullanım açıklamaları aşağıda korunmuştur.
+
+[Compare recorded outputs / Örnekleri karşılaştır](https://huggingface.co/spaces/halilneed/turkish-pii-detection-demo) · [Python tutorial and recorded examples](https://github.com/halilneed/turkish-pii-detection/blob/main/docs/python-turkish-pii-masking.md) · [Source code](https://github.com/halilneed/turkish-pii-detection) · [Model overview](https://halilneed.github.io/models/turkish-pii-detection/)
+
+## English technical guide
+
+### What the model does
+
+The 53-label masking schema and instruction families are inherited from v01. Names, national identifiers, phone numbers, email addresses and other personal-data expressions are transformed according to the policy. A restricted policy intentionally preserves fields that were not selected for masking.
+
+Use cases include preparing Turkish support messages, application logs or document excerpts before passing them to an LLM or another system. Validate the output on representative data. Local CPU or GPU inference is supported after downloading the model and dependencies. The online comparison page shows recorded examples; the local interactive demo processes new text on your own machine. Use fictional data while evaluating behavior.
+
+The canonical repository serves **v02** on `main`. The old `turkish-pii-detection-v01` URL redirects here. Use `revision="v01"` for the earlier release. A commit SHA pins a specific snapshot; the examples below pin the recorded v02 weights revision.
+
+### Python quick start: Turkish PII masking
+
+The following is the tested CPU inference path. Install the dependencies in a fresh environment:
+
+```bash
+python -m pip install torch==2.8.0 transformers==4.56.1
+```
+
+```python
+import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+MODEL_ID = "halilneed/turkish-pii-detection"
+REVISION = "28644718923ae38b0105c9f3d2be57312ad0ced3"
+
+tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, revision=REVISION)
+model = AutoModelForCausalLM.from_pretrained(
+    MODEL_ID, revision=REVISION, torch_dtype=torch.float32
+).to("cpu").eval()
+end_turn = tokenizer.convert_tokens_to_ids("<end_of_turn>")
+
+def mask_turkish_pii(text, instruction):
+    prompt = (
+        f"{tokenizer.bos_token}<start_of_turn>user\n{instruction}\n\n"
+        f"Metin: {text}<end_of_turn>\n<start_of_turn>model\n"
+    )
+    inputs = tokenizer(prompt, return_tensors="pt", add_special_tokens=False)
+    with torch.inference_mode():
+        sequence = model.generate(
+            **inputs, max_new_tokens=512, do_sample=False,
+            eos_token_id=end_turn, pad_token_id=tokenizer.eos_token_id,
+        )
+    generated = sequence[0, inputs["input_ids"].shape[1]:]
+    return tokenizer.decode(generated, skip_special_tokens=True).strip()
+
+text = "müşteri Ayşe Yılmaz tc 12345678901 tel 0532 111 22 33 e-posta demo@example.com."
+print(mask_turkish_pii(text, "Metindeki tüm kişisel verileri uygun etiketlerle maskele."))
+```
+
+The BOS token and Gemma turn markers are part of the prompt contract. Keep `add_special_tokens=False` to avoid adding a second BOS token. Instructions and input text are Turkish; English documentation does not imply English-language detection capability.
+
+For GPU inference, choose a dtype supported by your hardware and move both model and tensors to the same device. The original Turkish usage section below retains the GPU-oriented example. The companion `examples/mask.py` keeps its historical v01 default; pass the v02 revision explicitly.
+
+### Compare three masking policies
+
+Use the same fictional input with these Turkish instructions:
+
+| Policy | Instruction |
+| --- | --- |
+| Mask all | `Metindeki tüm kişisel verileri uygun etiketlerle maskele.` |
+| Phone only | `Metindeki yalnızca telefon numaralarını maskele; diğer tüm bilgileri olduğu gibi koru.` |
+| Keep names | `Metindeki kişi isimleri hariç tüm kişisel verileri uygun etiketlerle maskele. Kişi isimlerini olduğu gibi koru.` |
+
+The [recorded policy comparison](https://huggingface.co/spaces/halilneed/turkish-pii-detection-demo) lets you switch between three actual outputs for the same fictional input. Run the [local interactive demo](https://github.com/halilneed/turkish-pii-detection/tree/main/demo) to process your own text. The [Python tutorial](https://github.com/halilneed/turkish-pii-detection/blob/main/docs/python-turkish-pii-masking.md) records actual outputs from the pinned revision. These are functional examples, not a rerun of the 1,000-row benchmark.
+
+### Evaluation results and their scope
+
+Benchmark: [cagrigungor/turkish-pii-masking-benchmark](https://huggingface.co/datasets/cagrigungor/turkish-pii-masking-benchmark), 1,000 synthetic Turkish examples. The metric is **whole-row exact match**: the complete generated output must match the expected string.
+
+| Metric / slice | v01 rerun | v02 |
+| --- | ---: | ---: |
+| Exact match, all 1,000 examples | 0.880 | **0.944** |
+| Schema-neutral subset, 903 examples | 0.900 | **0.951** |
+| B partition, 531 examples not used for selection | 0.885 | **0.945** |
+| Full masking | 0.851 | 0.917 |
+| Whitelist | 0.895 | 0.940 |
+| Blacklist | 0.893 | 0.967 |
+| Out of scope | 0.960 | 1.000 |
+| Non-PII traps | 0.865 | 0.950 |
+| Long text | 0.656 | 0.844 |
+| Uppercase | 0.775 | 0.838 |
+| Suffixed PII | 0.758 | 0.803 |
+| Multiple people | 0.600 | 0.750 |
+| Numbers written as words | 0.946 | 1.000 |
+| Multi-field records | 0.968 | 0.980 |
+
+These are the existing release results. The benchmark was **not rerun for this documentation or demo update**. The historical v01 card reported 0.882 / 0.902; the publisher attributes the 0.880 / 0.900 rerun difference to bf16 batched inference, affecting two rows.
+
+Exact match is not entity recall or a guarantee that real documents are safe to share. This is an evaluation benchmark, not the training dataset. The Turkish section preserves the original result table and comparison context.
+
+### Training recipe and benchmark use
+
+1. **Synthetic generation:** 40,000 examples covering 53 labels, about 1,500 hand-written templates, Turkish suffixes, uppercase/ASCII transformations, numbers written as words and about 600 policy instructions.
+2. **Teacher alignment:** retain v01's boundaries when its output is a valid masking of the input with the same label set. Remove 7,136 conflicting examples in semantic categories; 32,864 examples remain.
+3. **Continued full fine-tuning:** initialize from v01; train for one epoch at learning rate 2e-5 and effective batch size 32, with loss on output tokens only.
+4. **Weight interpolation:** combine 0.5 of the fine-tuned weights with 0.5 of v01. Standalone fine-tuning regressed to 0.844 on the benchmark; interpolation was selected to retain strengths from both models.
+
+The original card says benchmark row contents were not used as training examples or templates, and synthetic data passed an automatic overlap filter. Aggregate benchmark feedback did influence development: slice scores and, once, aggregate label-group accuracy were reviewed.
+
+The interpolation ratio was selected using the **A partition (469 rows)**, the generator's development set and internal probes. The **B partition (531 rows)** was not used for selection, according to the release account. Its reported comparison is **0.885 → 0.945**. This is the publisher's disclosed selection boundary, not an independent contamination audit.
+
+### Limitations and failure handling
+
+- Evaluation uses synthetic data. Test on your own representative Turkish text before relying on the model.
+- Weaker slices include multiple people (0.750), suffixed PII (0.803) and uppercase text (0.838).
+- Very short fields without person context can remain unmasked. A standalone tax-number fragment is a known example; include the relevant context and review the result.
+- Generation can miss PII, modify unrelated text or produce labels outside the expected schema. Check preservation as well as masking.
+- Empty output and output that reaches the token limit require review. The demo reports truncation instead of silently treating incomplete text as a successful result.
+- Phone-only and keep-names policies deliberately leave some PII visible. Select a policy appropriate to the intended use.
+- Masking alone does not establish irreversible anonymization or KVKK/GDPR compliance. Model weights and use are subject to [Gemma Terms of Use](https://ai.google.dev/gemma/terms).
+
+The original release reports about 600 ms per short sentence and 1.6 GB RAM on an Intel i5-12400F, fp32, eight threads and batch size one. These figures describe that measurement setup; the public CPU demo and other hardware may differ.
+
+### Related Turkish privacy models
+
+[Turkish KVKK classifier](https://huggingface.co/halilneed/turkish-kvkk-classifier) predicts data categories that can inform a masking policy. [Turkish BSEBY classifier](https://huggingface.co/halilneed/turkish-bseby-classifier) classifies banking-data categories. These classifiers complement text masking; they do not perform the same task.
+
+## Türkçe tanıtım ve teknik açıklamalar
 
 Türkçe metindeki kişisel verileri, metin bir LLM'e, log deposuna ya da üçüncü tarafa gitmeden önce maskeleyen 270M parametrelik model. Maskeleme politikasını talimat olarak okur: tümünü maskele, yalnızca şu alanları, şunlar hariç hepsini.
 
