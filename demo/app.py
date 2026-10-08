@@ -121,7 +121,7 @@ Masking alone does not guarantee anonymization or legal compliance.
 
 [Model card, weights and limitations](https://huggingface.co/halilneed/turkish-pii-detection)
 · [Source code](https://github.com/halilneed/turkish-pii-detection/tree/main/demo)
-· [Model overview](https://halilneed.github.io/models/turkish-pii-detection/)
+· [Model overview](https://halilneed.agency/models/turkish-pii-detection/)
 """)
 
 demo.queue(max_size=8, default_concurrency_limit=1)

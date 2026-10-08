@@ -8,6 +8,8 @@ library_name: transformers
 tags:
 - pii
 - pii-detection
+- pii-masking
+- pii-redaction
 - turkish-nlp
 - personal-data
 - data-redaction
@@ -35,17 +37,25 @@ model-index:
     - type: exact_match
       name: Row-level exact match, schema-neutral (903 rows)
       value: 0.951
+    - type: exact_match
+      name: Row-level exact match, B partition not used for model selection (531 rows)
+      value: 0.945
 ---
 
 # Turkish PII Detection and Masking — Türkçe Kişisel Veri Maskeleme (v02)
 
-**[halilneed/turkish-pii-detection](https://huggingface.co/halilneed/turkish-pii-detection)** is a **270M-parameter model for Turkish PII detection and instruction-conditioned masking**, by [halilneed](https://halilneed.github.io/). PII means personally identifiable information. Give it Turkish text and a Turkish masking instruction: it generates text with the requested personal-data fields replaced by labels.
+A 270M-parameter model for **Turkish PII detection and masking**. Give it Turkish text and a Turkish instruction, and it returns the same text with the requested personal data (PII, personally identifiable information) replaced by labels.
 
-Choose **full masking**, **selected fields only**, or **everything except specified fields**. The model produces transformed text; it does not return named-entity recognition (NER) spans, token labels or character offsets. For a structured NER pipeline, choose a span-based detector.
+```
+Input : müşteri Ayşe Yılmaz tc 12345678901 tel 0532 111 22 33
+Output: müşteri [AD] tc [TCKN] tel [TEL]
+```
 
-**Türkçe:** Verilen talimata göre Türkçe metindeki kişisel verileri maskeleyen 270M parametreli model. Tümünü, yalnızca seçilen alanları veya belirtilen alanlar dışındakileri maskeleyebilirsiniz. Türkçe tanıtım, sonuçlar, eğitim tarifi ve kullanım açıklamaları aşağıda korunmuştur.
+The instruction sets the policy: **full masking**, **selected fields only**, or **everything except specified fields**. v02 scores 0.944 row-level exact match on a public 1,000-row synthetic benchmark; the slices and caveats are below. The model produces transformed text; it does not return named-entity recognition (NER) spans, token labels or character offsets. For a structured NER pipeline, choose a span-based detector.
 
-[Interactive browser demo / Metninizi deneyin](https://huggingface.co/spaces/halilneed/turkish-pii-detection-demo) · [Python tutorial and recorded examples](https://github.com/halilneed/turkish-pii-detection/blob/main/docs/python-turkish-pii-masking.md) · [Source code](https://github.com/halilneed/turkish-pii-detection) · [Model overview](https://halilneed.github.io/models/turkish-pii-detection/)
+**Türkçe:** Verilen talimata göre Türkçe metindeki kişisel verileri maskeleyen 270M parametreli model. Tümünü, yalnızca seçilen alanları veya belirtilen alanlar dışındakileri maskeleyebilirsiniz. Türkçe anlatım: [aşağıda](#türkçe-tanıtım-ve-teknik-açıklamalar).
+
+[Interactive browser demo / Metninizi deneyin](https://huggingface.co/spaces/halilneed/turkish-pii-detection-demo) · [Python tutorial and recorded examples](https://github.com/halilneed/turkish-pii-detection/blob/main/docs/python-turkish-pii-masking.md) · [Source code](https://github.com/halilneed/turkish-pii-detection) · [Model overview](https://halilneed.agency/models/turkish-pii-detection/) · by [halilneed](https://halilneed.agency/)
 
 ## English technical guide
 
@@ -133,9 +143,9 @@ Benchmark: [cagrigungor/turkish-pii-masking-benchmark](https://huggingface.co/da
 | Numbers written as words | 0.946 | 1.000 |
 | Multi-field records | 0.968 | 0.980 |
 
-These are the existing release results. The benchmark was **not rerun for this documentation or demo update**. The historical v01 card reported 0.882 / 0.902; the publisher attributes the 0.880 / 0.900 rerun difference to bf16 batched inference, affecting two rows.
+These are the v02 release results; the benchmark has not been rerun since. The v01 column was re-measured with the same evaluation script. The v01 card reported 0.882 / 0.902; the rerun is two rows lower (0.880 / 0.900) because it used bf16 batched inference.
 
-Exact match is not entity recall or a guarantee that real documents are safe to share. This is an evaluation benchmark, not the training dataset. The Turkish section preserves the original result table and comparison context.
+Exact match is not entity recall or a guarantee that real documents are safe to share. This is an evaluation benchmark, not the training dataset. Scores that other models report for the same benchmark in their own cards are listed under [Sonuçlar](#sonuçlar).
 
 ### Training recipe and benchmark use
 
@@ -144,9 +154,9 @@ Exact match is not entity recall or a guarantee that real documents are safe to 
 3. **Continued full fine-tuning:** initialize from v01; train for one epoch at learning rate 2e-5 and effective batch size 32, with loss on output tokens only.
 4. **Weight interpolation:** combine 0.5 of the fine-tuned weights with 0.5 of v01. Standalone fine-tuning regressed to 0.844 on the benchmark; interpolation was selected to retain strengths from both models.
 
-The original card says benchmark row contents were not used as training examples or templates, and synthetic data passed an automatic overlap filter. Aggregate benchmark feedback did influence development: slice scores and, once, aggregate label-group accuracy were reviewed.
+Benchmark row contents were not used as training examples or templates, and the synthetic data passed an automatic overlap filter (rows sharing an 8-word sequence with a benchmark input, or an identical instruction, were dropped). Aggregate benchmark feedback did influence development: slice scores and, once, aggregate label-group accuracy were reviewed.
 
-The interpolation ratio was selected using the **A partition (469 rows)**, the generator's development set and internal probes. The **B partition (531 rows)** was not used for selection, according to the release account. Its reported comparison is **0.885 → 0.945**. This is the publisher's disclosed selection boundary, not an independent contamination audit.
+The interpolation ratio was selected using the **A partition (469 rows)**, the generator's development set and internal probes. The **B partition (531 rows)** was not used for selection; on it the comparison is **0.885 → 0.945**. This is a self-reported selection boundary, not an independent contamination audit.
 
 ### Limitations and failure handling
 
@@ -158,11 +168,13 @@ The interpolation ratio was selected using the **A partition (469 rows)**, the g
 - Phone-only and keep-names policies deliberately leave some PII visible. Select a policy appropriate to the intended use.
 - Masking alone does not establish irreversible anonymization or KVKK/GDPR compliance. Model weights and use are subject to [Gemma Terms of Use](https://ai.google.dev/gemma/terms).
 
-The original release reports about 600 ms per short sentence and 1.6 GB RAM on an Intel i5-12400F, fp32, eight threads and batch size one. These figures describe that measurement setup; the public CPU demo and other hardware may differ.
+Measured speed: about 600 ms per short sentence (about 50 characters) and about 1.6 GB RAM on an Intel i5-12400F, fp32, eight threads and batch size one. These figures describe that measurement setup; the browser demo and other hardware will differ.
 
 ### Related Turkish privacy models
 
 [Turkish KVKK classifier](https://huggingface.co/halilneed/turkish-kvkk-classifier) predicts data categories that can inform a masking policy. [Turkish BSEBY classifier](https://huggingface.co/halilneed/turkish-bseby-classifier) classifies banking-data categories. These classifiers complement text masking; they do not perform the same task.
+
+All three models and the two classifier benchmarks ([KVKK](https://huggingface.co/datasets/halilneed/turkish-kvkk-classification-benchmark), [BSEBY](https://huggingface.co/datasets/halilneed/turkish-bseby-classification-benchmark)) are grouped in the [Turkish Privacy Stack collection](https://huggingface.co/collections/halilneed/turkish-privacy-stack).
 
 ## Türkçe tanıtım ve teknik açıklamalar
 
@@ -208,7 +220,7 @@ Bu veri seti değerlendirme benchmark’ıdır; eğitim verisi olarak listelenme
 
 v01 sütunu bu makinede, aynı değerlendirme betiğiyle yeniden ölçüldü (kartındaki 0.882 / 0.902'den bf16 toplu çıkarım farkıyla 2 satır aşağı).
 
-Aynı benchmark'ta diğer modellerin **kendi kartlarında yayınladıkları** skorlar (yeniden koşulmadı): cagrigungor/pii-guard-turkish-0.8b 0.876 / 0.889 · melikegks/turkish-pii-guard-0.8b şema-nötr 0.922.
+Aynı benchmark'ta diğer modellerin **kendi kartlarında yayınladıkları** skorlar (yeniden koşulmadı): cagrigungor/pii-guard-turkish-0.8b 0.876 / 0.889 · saturday-labs/turkish-pii-guard-0.8b (eski adı melikegks/turkish-pii-guard-0.8b) şema-nötr 0.922.
 
 ### Benchmark nasıl kullanıldı
 
