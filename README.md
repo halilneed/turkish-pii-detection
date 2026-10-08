@@ -1,8 +1,8 @@
 # Turkish PII Detection and Masking — Türkçe Kişisel Veri Maskeleme
 
-Usage examples, evaluation utilities, and development notes for [halilneed/turkish-pii-detection](https://huggingface.co/halilneed/turkish-pii-detection), a 270M model for instruction-conditioned Turkish PII detection and masking by [halilneed](https://halilneed.github.io/). The current release is v02; this repository also preserves historical v01 notes and its pinned inference default.
+Usage examples, evaluation utilities, and development notes for [halilneed/turkish-pii-detection](https://huggingface.co/halilneed/turkish-pii-detection), a 270M model for instruction-conditioned Turkish PII detection and masking by [halilneed](https://halilneed.agency/). The current release is v02; this repository also preserves historical v01 notes and its pinned inference default.
 
-**Start here:** [Turkish PII detection model and weights](https://huggingface.co/halilneed/turkish-pii-detection) · [interactive browser demo](https://huggingface.co/spaces/halilneed/turkish-pii-detection-demo) · [Python tutorial with recorded examples](docs/python-turkish-pii-masking.md) · [model overview](https://halilneed.github.io/models/turkish-pii-detection/) · [v02 results and version selection](docs/v02-release.md) · [how the model was built](docs/how-it-was-built.md) · [evaluation guide](docs/evaluation.md) · [report a synthetic failure case](https://github.com/halilneed/turkish-pii-detection/issues/new?template=masking-failure.md)
+**Start here:** [Turkish PII detection model and weights](https://huggingface.co/halilneed/turkish-pii-detection) · [interactive browser demo](https://huggingface.co/spaces/halilneed/turkish-pii-detection-demo) · [Python tutorial with recorded examples](docs/python-turkish-pii-masking.md) · [model overview](https://halilneed.agency/models/turkish-pii-detection/) · [v02 results and version selection](docs/v02-release.md) · [how the model was built](docs/how-it-was-built.md) · [evaluation guide](docs/evaluation.md) · [report a synthetic failure case](https://github.com/halilneed/turkish-pii-detection/issues/new?template=masking-failure.md)
 
 Türkçe: Model, verilen talimata göre Türkçe metindeki kişisel veri ifadelerini maskeler. Bu depo kullanım örneği, değerlendirme aracı ve geliştirme notlarını bir araya getirir.
 
@@ -76,7 +76,7 @@ Use fictional examples in public issues. Include the instruction, expected and a
 
 ## Development notes
 
-Read [Building a Small Turkish PII Masking Model](docs/how-it-was-built.md) for the documented recipe and next evaluation priorities. The historical v01 article is included here. A [published Medium article](https://halilneed.medium.com/daha-b%C3%BCy%C3%BCk-model-e%C4%9Fitmedim-zay%C4%B1f-dilimleri-e%C4%9Fittim-f4dcc4afaf5d) is also linked from the model card. Author: [halilneed portfolio](https://halilneed.github.io/) · [GitHub](https://github.com/halilneed) · [Medium](https://halilneed.medium.com/).
+Read [Building a Small Turkish PII Masking Model](docs/how-it-was-built.md) for the documented recipe and next evaluation priorities. The historical v01 article is included here. A [published Medium article](https://halilneed.medium.com/daha-b%C3%BCy%C3%BCk-model-e%C4%9Fitmedim-zay%C4%B1f-dilimleri-e%C4%9Fittim-f4dcc4afaf5d) is also linked from the model card. Author: [halilneed portfolio](https://halilneed.agency/) · [GitHub](https://github.com/halilneed) · [Medium](https://halilneed.medium.com/).
 
 See the [roadmap](docs/roadmap.md). Documentation improvements do not constitute a new model version.
 

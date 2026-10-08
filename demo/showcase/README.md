@@ -1,6 +1,6 @@
 ---
 title: Turkish PII Detection and Masking
-short_description: Mask your own Turkish text locally in your browser
+short_description: Mask PII in Turkish text, locally in your browser
 emoji: 🔎
 colorFrom: blue
 colorTo: green
@@ -12,8 +12,15 @@ models:
 - halilneed/turkish-pii-detection
 tags:
 - turkish
+- pii
 - pii-detection
+- pii-masking
 - masking
+- anonymization
+- kvkk
+- privacy
+- transformers.js
+- onnx
 ---
 
 # Turkish PII Detection: interactive browser demo
@@ -29,6 +36,7 @@ Quantization can change outputs. Original Python benchmark scores have not been 
 - [Turkish PII detection model on Hugging Face](https://huggingface.co/halilneed/turkish-pii-detection)
 - [Run the local interactive demo](https://github.com/halilneed/turkish-pii-detection/tree/main/demo)
 - [Python tutorial with instructions and recorded results](https://github.com/halilneed/turkish-pii-detection/blob/main/docs/python-turkish-pii-masking.md)
+- [Model overview and benchmark notes](https://halilneed.agency/models/turkish-pii-detection/)
 
 Original weight revision: `28644718923ae38b0105c9f3d2be57312ad0ced3`. Converted with PyTorch 2.8.0+cpu, Transformers 4.56.1 and Optimum ONNX 0.1.0; dynamic uint8 MatMul/Gather quantization with ONNX Runtime 1.23.2. Browser runtime: Transformers.js 4.3.0. Three policy examples and a different input were checked with the actual converted model in Node and a browser; these functional checks are not a benchmark rerun.
 

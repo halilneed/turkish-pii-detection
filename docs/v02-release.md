@@ -40,7 +40,7 @@ The command selects the recorded v02 snapshot, rather than the script's historic
 
 ## Resources
 
-- [Model overview and Turkish summary](https://halilneed.github.io/models/turkish-pii-detection/)
+- [Model overview and Turkish summary](https://halilneed.agency/models/turkish-pii-detection/)
 - [Weights, policy and current model card](https://huggingface.co/halilneed/turkish-pii-detection)
 - [Evaluation guide](evaluation.md)
 - [Historical v01 training article](how-it-was-built.md)
